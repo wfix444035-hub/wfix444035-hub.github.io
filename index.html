@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的作品展示與評論區</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        /* 防盜圖容器 */
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            overflow: hidden;
+        }
+        .image-wrapper img {
+            width: 100%;
+            display: block;
+            border-radius: 4px;
+            pointer-events: none; 
+        }
+        /* 透明遮罩層：讓滑鼠右鍵點不到圖片本身 */
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0); 
+            z-index: 10;
+        }
+        /* 網頁內建半透明防盜浮水印 */
+        .watermark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='150' height='150' viewBox='0 0 150 150'><text x='10' y='100' fill='rgba(255,0,0,0.15)' font-size='16' font-family='Arial' transform='rotate(-30 50 100)'>版權所有 翻印必究</text></svg>");
+            background-repeat: repeat;
+        }
+        /* 評論區樣式 */
+        .comment-section {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
+
+    <div class="container">
+        <h1>我的圖片作品</h1>
+        
+        <!-- 圖片區 -->
+        <div class="image-wrapper">
+            <div class="image-overlay"></div>
+            <div class="watermark"></div>
+            <!-- 預設測試圖片，之後可以換成你的圖 -->
+            <img src="https://picsum.photos" alt="作品圖片">
+        </div>
+        
+        <p style="color: red; text-align: center; font-size: 14px;">⚠️ 本站圖片受版權保護，已啟用最高等級防盜機制，禁止下載。</p>
+
+        <!-- 評論區 -->
+        <div class="comment-section">
+            <h3>訪客評論區</h3>
+            <iframe src="https://freecommentscript.com" width="100%" height="400" frameborder="0" scrolling="yes"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // 阻擋 F12、Ctrl+Shift+I、Ctrl+U 等檢查原始碼行為
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) { return false; } 
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) { return false; } 
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 67) { return false; } 
+            if (e.ctrlKey && e.keyCode == 85) { return false; } 
+        };
+    </script>
+</body>
+</html>
