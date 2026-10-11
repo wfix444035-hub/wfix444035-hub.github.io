@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的作品展示與評論區</title>
+    <title>漾汐的ai作品展示與評論區</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,23 +74,38 @@
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
-    <div class="container">
-        <h1>我的圖片作品</h1>
-        
-        <!-- 圖片區 -->
+            <!-- 圖片區（已強化浮水印層級） -->
         <div class="image-wrapper">
-            <div class="image-overlay"></div>
-            <div class="watermark"></div>
-            <!-- 預設測試圖片，之後可以換成你的圖 -->
+            <!-- 1. 最底層放圖片 -->
             <img src="file_0000000082b88209a87529a60630e773~2.jpg" alt="作品圖片">
+            
+            <!-- 2. 中間層放重複的浮水印字體 -->
+            <div class="watermark" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; pointer-events: none; background-image: url(&quot;data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='150' height='150' viewBox='0 0 150 150'><text x='10' y='100' fill='rgba(255,0,0,0.25)' font-size='16' font-family='Arial' transform='rotate(-30 50 100)'>版權所有 翻印必究</text></svg>&quot;); background-repeat: repeat;"></div>
+            
+            <!-- 3. 最上層放防點擊的透明遮罩 -->
+            <div class="image-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0); z-index: 1000;"></div>
+        </div>
+
         </div>
         
         <p style="color: red; text-align: center; font-size: 14px;">禁止下載。</p>
 
         <!-- 評論區 -->
         <div class="comment-section">
-            <h3>訪客評論區</h3>
-            <iframe src="https://freecommentscript.com" width="100%" height="400" frameborder="0" scrolling="yes"></iframe>
+            <h3>訪客評論區</h3><div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;  
+        this.page.identifier = window.location.pathname; 
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');
+        s.src = 'https://disqus.com';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<iframe src="https://freecommentscript.com" width="100%" height="400" frameborder="0" scrolling="yes"></iframe>
         </div>
     </div>
 
