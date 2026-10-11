@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>作品展示與評論區</title>
+    <title>我的作品展示與評論區</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,7 +43,7 @@
             border-radius: 4px;
             pointer-events: none; 
         }
-        /* 透明防盜遮罩：確保點不到圖片，且浮水印在這個層級之上 */
+        /* 最上層：透明防盜遮罩 */
         .image-overlay {
             position: absolute;
             top: 0;
@@ -51,25 +51,56 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0); 
-            z-index: 100;
+            z-index: 1000;
         }
-        /* 浮水印層：移到最高層級，改用文字背景覆蓋，保證看得到 */
+        /* 浮水印層：超亮白色加粗，保證在暗色月亮上清清楚楚 */
         .watermark {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 200;
+            z-index: 999;
             pointer-events: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='150' height='150' viewBox='0 0 150 150'><text x='0' y='80' fill='rgba(255,255,255,0.4)' font-size='16' font-family='Arial' font-weight='bold' transform='rotate(-30 50 80)'>勿拿</text></svg>");
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='180' height='180' viewBox='0 0 180 180'><text x='10' y='100' fill='rgba(255,255,255,0.45)' font-size='18' font-family='Arial' font-weight='bold' transform='rotate(-30 50 100)'>版權所有 翻印必究</text></svg>");
             background-repeat: repeat;
         }
-        /* 評論區樣式 */
+        /* 網頁內建留言板樣式 */
         .comment-section {
             margin-top: 30px;
             border-top: 1px solid #eee;
             padding-top: 20px;
+        }
+        .comment-box {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-height: 80px;
+            margin-bottom: 10px;
+            resize: none;
+        }
+        .comment-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .comment-list {
+            margin-top: 20px;
+            list-style: none;
+            padding: 0;
+        }
+        .comment-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            border-left: 4px solid #007bff;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -87,14 +118,34 @@
         
         <p style="color: red; text-align: center; font-size: 14px;">⚠️ 本站圖片受版權保護，已啟用最高等級防盜機制，禁止下載。</p>
 
-        <!-- 評論區（換成超穩定的免密碼萬用留言板） -->
+        <!-- 網頁內建獨立留言板（100%可打字） -->
         <div class="comment-section">
             <h3>訪客評論區</h3>
-            <iframe src="https://cdpn.io" width="100%" height="450" frameborder="0" style="border:1px solid #ddd; border-radius:4px;"></iframe>
+            <textarea id="commentInput" class="comment-box" placeholder="在這裡輸入你的評論..."></textarea>
+            <button class="comment-btn" onclick="addComment()">發表評論</button>
+            <ul id="commentList" class="comment-list">
+                <li class="comment-item">🎉 歡迎來到我的作品展示區！歡迎在上方留下你的看法。</li>
+            </ul>
         </div>
     </div>
 
     <script>
+        // 內建留言板互動功能
+        function addComment() {
+            var input = document.getElementById('commentInput');
+            var text = input.value.trim();
+            if (text === '') {
+                alert('請先輸入評論內容喔！');
+                return;
+            }
+            var li = document.createElement('li');
+            li.className = 'comment-item';
+            li.innerText = '訪客：' + text;
+            document.getElementById('commentList').appendChild(li);
+            input.value = '';
+        }
+
+        // 阻擋電腦檢查行為
         document.onkeydown = function(e) {
             if (e.keyCode == 123) { return false; } 
             if (e.ctrlKey && e.shiftKey && e.keyCode == 73) { return false; } 
