@@ -1,60 +1,219 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ai作品展示與評論區</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f4f9">
+    <title>漾汐｜私人作品展示館</title>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background: #f4f4f9;
+            color: #333;
             margin: 0;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
+
         .container {
             max-width: 600px;
             width: 100%;
+            margin: 20px auto;
+            padding: 22px;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            box-sizing: border-box;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px #00000012;
         }
-        h1 {
+
+        h1, h2, h3 {
             text-align: center;
-            color: #333;
         }
-        /* 防盜圖容器 */
+
+        h1 {
+            font-size: 25px;
+        }
+
+        input, textarea, button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 9px 0;
+            border-radius: 6px;
+            font: inherit;
+        }
+
+        input, textarea {
+            border: 1px solid #ccc;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        button {
+            border: 0;
+            background: #555080;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #403b68;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        #status {
+            text-align: center;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .notice {
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+            line-height: 1.7;
+        }
+
         .image-wrapper {
             position: relative;
             width: 100%;
-            margin-bottom: 20px;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
+            margin: 20px 0;
             overflow: hidden;
+            border-radius: 6px;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
+
         .image-wrapper img {
-            width: 100%;
             display: block;
-            border-radius: 4px;
-            pointer-events: none; 
-        }
-        /* 最上層：透明防盜遮罩 */
-        .image-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0); 
-            z-index: 1000;
+            height: auto;
+            pointer-events: none;
+            -webkit-user-drag: none;
         }
-        <!-- 鋪在月亮正上方的 9 宮格防盜文字網（純 漾汐） -->
-            <div class="watermark-overlay">
+
+        .watermark-overlay {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .watermark-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, .72);
+            font-size: clamp(14px, 4vw, 22px);
+            font-weight: bold;
+            text-shadow:
+                0 1px 3px #000,
+                0 0 5px #000;
+            transform: rotate(-20deg);
+            white-space: nowrap;
+        }
+
+        .comment-section {
+            border-top: 1px solid #eee;
+            margin-top: 28px;
+            padding-top: 18px;
+        }
+
+        .comment-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 18px;
+        }
+
+        .comment-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin-bottom: 9px;
+            border-left: 4px solid #555080;
+            border-radius: 5px;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .small {
+            font-size: 12px;
+            color: #888;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+<main class="container">
+
+    <h1>漾汐｜私人作品展示館</h1>
+
+    <p class="notice">
+        原創作品僅限獲得授權的訪客觀看。<br>
+        未經允許，請勿保存、轉載或冒用作品。
+    </p>
+
+    <!-- 登入區 -->
+    <section id="loginPanel">
+        <h2>訪客登入</h2>
+
+        <form id="loginForm">
+            <input
+                id="email"
+                type="email"
+                placeholder="已獲邀請的電子郵件"
+                autocomplete="username"
+                required
+            >
+
+            <input
+                id="password"
+                type="password"
+                placeholder="帳號密碼"
+                autocomplete="current-password"
+                required
+            >
+
+            <button id="loginButton" type="submit">
+                登入並確認觀看權限
+            </button>
+        </form>
+
+        <p class="notice">
+            僅限你邀請並核准的帳號登入。
+        </p>
+    </section>
+
+    <p id="status" role="status" aria-live="polite">
+        請登入以檢查觀看權限。
+    </p>
+
+    <!-- 作品展示區 -->
+    <section id="gallery" hidden>
+        <h2>我的圖片作品</h2>
+
+        <div class="image-wrapper">
+            <img id="artwork" alt="漾汐的原創作品">
+
+            <div class="watermark-overlay" aria-hidden="true">
                 <div class="watermark-text">漾汐</div>
                 <div class="watermark-text">漾汐</div>
                 <div class="watermark-text">漾汐</div>
@@ -65,93 +224,300 @@
                 <div class="watermark-text">漾汐</div>
                 <div class="watermark-text">漾汐</div>
             </div>
-        /* 網頁內建留言板樣式 */
-        .comment-section {
-            margin-top: 30px;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        .comment-box {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            min-height: 80px;
-            margin-bottom: 10px;
-            resize: none;
-        }
-        .comment-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .comment-list {
-            margin-top: 20px;
-            list-style: none;
-            padding: 0;
-        }
-        .comment-item {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            border-left: 4px solid #007bff;
-            font-size: 14px;
-        }
-    </style>
-</head>
-<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
-
-    <div class="container">
-        <h1>我的圖片作品</h1>
-        
-        <!-- 圖片區 -->
-        <div class="image-wrapper">
-            <img src="file_0000000082b88209a87529a60630e773~2.jpg" alt="作品圖片">
-            <div class="watermark"></div>
-            <div class="image-overlay"></div>
         </div>
-        
-        <p style="color: red; text-align: center; font-size: 14px;"勿拿。</p>
 
-        <!-- 網頁內建獨立留言板（100%可打字） -->
-        <div class="comment-section">
-            <h3>訪客評論區</h3>
-            <textarea id="commentInput" class="comment-box" placeholder="在這裡輸入你的評論..."></textarea>
-            <button class="comment-btn" onclick="addComment()">發表評論</button>
-            <ul id="commentList" class="comment-list">
-                <li class="comment-item">🎉 歡迎來到我的作品展示區！歡迎在上方留下你的看法。</li>
-            </ul>
-        </div>
-    </div>
+        <p class="notice">
+            © 漾汐｜原創作品，未經允許請勿擅自轉載。
+        </p>
 
-    <script>
-        // 內建留言板互動功能
-        function addComment() {
-            var input = document.getElementById('commentInput');
-            var text = input.value.trim();
-            if (text === '') {
-                alert('請先輸入評論內容喔！');
-                return;
-            }
-            var li = document.createElement('li');
-            li.className = 'comment-item';
-            li.innerText = '訪客：' + text;
-            document.getElementById('commentList').appendChild(li);
-            input.value = '';
+        <button id="refreshButton" type="button">
+            重新驗證並載入作品
+        </button>
+    </section>
+
+    <!-- 留言板：只在核准後顯示 -->
+    <section id="commentSection" class="comment-section" hidden>
+        <h3>訪客評論區</h3>
+
+        <textarea
+            id="commentInput"
+            placeholder="在這裡輸入你的評論……"
+            maxlength="1000"
+        ></textarea>
+
+        <button id="commentButton" type="button">
+            發表評論
+        </button>
+
+        <p class="small">
+            注意：目前留言只保存在這個瀏覽器頁面中，重新載入後就會消失。
+        </p>
+
+        <ul id="commentList" class="comment-list">
+            <li class="comment-item">
+                🎉 歡迎來到我的作品展示區！
+            </li>
+        </ul>
+    </section>
+
+    <button id="logoutButton" type="button" hidden>
+        登出
+    </button>
+
+</main>
+
+<script type="module">
+    import { createClient }
+        from 'https://esm.sh/@supabase/supabase-js@2';
+
+    /*
+      請填入自己的 Supabase 專案資料。
+      不要填入 service_role 或 sb_secret 私密金鑰。
+    */
+    const SUPABASE_URL = '在這裡填入你的Supabase專案網址';
+    const SUPABASE_KEY = '在這裡填入你的PublishableKey';
+
+    /*
+      圖片必須先上傳到名為 artworks 的私人儲存桶。
+      這裡填的是儲存桶內的檔案路徑。
+    */
+    const IMAGE_PATH = 'your-artwork.jpg';
+
+    const loginPanel = document.getElementById('loginPanel');
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = document.getElementById('loginButton');
+    const statusText = document.getElementById('status');
+
+    const gallery = document.getElementById('gallery');
+    const artwork = document.getElementById('artwork');
+    const logoutButton = document.getElementById('logoutButton');
+    const refreshButton = document.getElementById('refreshButton');
+
+    const commentSection = document.getElementById('commentSection');
+    const commentInput = document.getElementById('commentInput');
+    const commentButton = document.getElementById('commentButton');
+    const commentList = document.getElementById('commentList');
+
+    const configMissing =
+        SUPABASE_URL.includes('在這裡填入') ||
+        SUPABASE_KEY.includes('在這裡填入');
+
+    let supabase = null;
+    let operationId = 0;
+    let signedUrlExpiresAt = 0;
+
+    function setStatus(message) {
+        statusText.textContent = message;
+    }
+
+    function hidePrivateContent() {
+        operationId++;
+        gallery.hidden = true;
+        commentSection.hidden = true;
+        artwork.removeAttribute('src');
+        signedUrlExpiresAt = 0;
+    }
+
+    function showLoggedOut() {
+        hidePrivateContent();
+        loginPanel.hidden = false;
+        logoutButton.hidden = true;
+        loginButton.disabled = false;
+        setStatus('請登入以檢查觀看權限。');
+    }
+
+    async function loadArtwork() {
+        if (!supabase) return;
+
+        const thisOperation = ++operationId;
+
+        hidePrivateContent();
+        setStatus('正在驗證帳號與觀看權限……');
+
+        const { data: userData, error: userError } =
+            await supabase.auth.getUser();
+
+        if (thisOperation !== operationId) return;
+
+        if (userError || !userData.user) {
+            showLoggedOut();
+            return;
         }
 
-        // 阻擋電腦檢查行為
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123) { return false; } 
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) { return false; } 
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 67) { return false; } 
-            if (e.ctrlKey && e.keyCode == 85) { return false; } 
+        loginPanel.hidden = true;
+        logoutButton.hidden = false;
+
+        const userId = userData.user.id;
+
+        const { data: approval, error: approvalError } =
+            await supabase
+                .from('approved_viewers')
+                .select('approved')
+                .eq('user_id', userId)
+                .maybeSingle();
+
+        if (thisOperation !== operationId) return;
+
+        if (
+            approvalError ||
+            !approval ||
+            approval.approved !== true
+        ) {
+            hidePrivateContent();
+            setStatus('這個帳號尚未獲得觀看授權。');
+            return;
+        }
+
+        /*
+          先確認帳號授權，再取得 5 分鐘有效的圖片網址。
+          私人儲存桶仍必須搭配正確的 Storage RLS 政策。
+        */
+        const { data: signed, error: signedError } =
+            await supabase.storage
+                .from('artworks')
+                .createSignedUrl(IMAGE_PATH, 300);
+
+        if (thisOperation !== operationId) return;
+
+        if (signedError || !signed?.signedUrl) {
+            setStatus(
+                '無法取得圖片。請確認檔名、私人儲存桶及存取規則。'
+            );
+            return;
+        }
+
+        artwork.onload = () => {
+            if (thisOperation !== operationId) return;
+
+            gallery.hidden = false;
+            commentSection.hidden = false;
+            setStatus('授權成功，作品已開放觀看。');
         };
-    </script>
+
+        artwork.onerror = () => {
+            if (thisOperation !== operationId) return;
+
+            hidePrivateContent();
+            setStatus('圖片載入失敗，請檢查圖片路徑。');
+        };
+
+        signedUrlExpiresAt = Date.now() + 300000;
+        artwork.src = signed.signedUrl;
+    }
+
+    if (configMissing) {
+        loginPanel.hidden = true;
+        setStatus('請先填入 Supabase 專案網址與 Publishable Key。');
+    } else {
+        try {
+            supabase = createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY,
+                {
+                    auth: {
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: true
+                    }
+                }
+            );
+
+            loginForm.addEventListener('submit', async event => {
+                event.preventDefault();
+
+                loginButton.disabled = true;
+                setStatus('正在登入……');
+
+                try {
+                    const email =
+                        document.getElementById('email').value.trim();
+
+                    const password =
+                        document.getElementById('password').value;
+
+                    const { error } =
+                        await supabase.auth.signInWithPassword({
+                            email,
+                            password
+                        });
+
+                    if (error) {
+                        setStatus('登入失敗，請檢查帳號、密碼或邀請狀態。');
+                        return;
+                    }
+
+                    await loadArtwork();
+                } catch (error) {
+                    setStatus('發生錯誤，請稍後再試。');
+                } finally {
+                    loginButton.disabled = false;
+                }
+            });
+
+            refreshButton.addEventListener('click', loadArtwork);
+
+            logoutButton.addEventListener('click', async () => {
+                hidePrivateContent();
+
+                const { error } = await supabase.auth.signOut();
+
+                if (error) {
+                    setStatus('登出遇到問題，請重新嘗試。');
+                    return;
+                }
+
+                showLoggedOut();
+            });
+
+            /*
+              留言目前僅存在瀏覽器記憶體。
+              若需要跨裝置保存，必須另外建立資料表及 RLS。
+            */
+            commentButton.addEventListener('click', () => {
+                const text = commentInput.value.trim();
+
+                if (!text) {
+                    alert('請先輸入評論內容。');
+                    return;
+                }
+
+                if (commentSection.hidden) {
+                    alert('請先取得作品觀看授權。');
+                    return;
+                }
+
+                const li = document.createElement('li');
+                li.className = 'comment-item';
+                li.textContent = '訪客：' + text;
+
+                commentList.appendChild(li);
+                commentInput.value = '';
+            });
+
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_OUT' || !session) {
+                    showLoggedOut();
+                }
+            });
+
+            loadArtwork();
+
+        } catch (error) {
+            hidePrivateContent();
+            setStatus('網站設定錯誤，請檢查 Supabase 專案資料。');
+        }
+    }
+
+    // 一般操作防護：無法阻止系統截圖或其他裝置拍照。
+    document.addEventListener('contextmenu', event => {
+        if (event.target.closest('.image-wrapper')) {
+            event.preventDefault();
+        }
+    });
+
+    artwork.addEventListener('dragstart', event => {
+        event.preventDefault();
+    });
+</script>
 </body>
 </html>
