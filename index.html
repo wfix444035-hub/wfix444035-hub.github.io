@@ -53,18 +53,18 @@
             background: rgba(0,0,0,0); 
             z-index: 1000;
         }
-        /* 浮水印層：超亮白色加粗，保證在暗色月亮上清清楚楚 */
-        .watermark {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 999;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='180' height='180' viewBox='0 0 180 180'><text x='10' y='100' fill='rgba(255,255,255,0.45)' font-size='18' font-family='Arial' font-weight='bold' transform='rotate(-30 50 100)'>版權所有 翻印必究</text></svg>");
-            background-repeat: repeat;
-        }
+        <!-- 鋪在月亮正上方的 9 宮格防盜文字網（純 漾汐） -->
+            <div class="watermark-overlay">
+                <div class="watermark-text">漾汐</div>
+                <div class="watermark-text">漾汐</div>
+                <div class="watermark-text">漾汐</div>
+                <div class="watermark-text">漾汐</div>
+                <div class="watermark-text">漾汐</div>
+                <div class="watermark-text">漾汐</div>
+                <div class="watermark-text">漾汐</div>
+                <div class="watermark-text">漾汐</div>
+                <div class="watermark-text">漾汐</div>
+            </div>
         /* 網頁內建留言板樣式 */
         .comment-section {
             margin-top: 30px;
